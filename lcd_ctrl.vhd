@@ -46,7 +46,7 @@ port (
 );
 end component;
 
-signal sig_rdy, sig_rs, rs_init_fsm, init_done, stb_init_fsm, stb_tx : std_logic;
+signal tx_rdy, sig_rs, rs_init_fsm, init_done, stb_init_fsm, stb_tx : std_logic;
 signal init_data, data_tx : std_logic_vector(0 to 7);
 
 begin
@@ -58,7 +58,7 @@ begin
         byte_in => data_tx,
         stb => stb_tx,
         rs => sig_rs,
-        rdy => sig_rdy,
+        rdy => tx_rdy,
         lcd_rs => lcd_rs,
         lcd_en => lcd_en,
         lcd_rw => lcd_rw,
@@ -69,7 +69,7 @@ begin
     port map(
         clk => clk,
         rst => rst,
-        rdy => sig_rdy,
+        rdy => tx_rdy,
         init_done => init_done,
         data => init_data,
         stb => stb_init_fsm,
@@ -79,6 +79,6 @@ begin
     stb_tx <= stb when init_done = '1' else stb_init_fsm;
     data_tx <= data_in when init_done = '1' else init_data;
     sig_rs <= rs when init_done = '1' else rs_init_fsm;
-    rdy <= sig_rdy;
+    rdy <= tx_rdy when init_done = '1' else '0';
 
 end architecture;
